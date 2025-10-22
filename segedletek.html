@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Segédletek – Kábel terhelhetőség</title>
+<style>
+:root{--bg:#0b0b0c;--card:#1a1a1c;--text:#e1e1e1;--muted:#9da6b5;--line:#2a2a2d}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
+.wrap{max-width:960px;margin:32px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 40px rgba(0,0,0,.35)}
+.pill{display:inline-block;background:#151517;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px}
+.muted{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;background:#121214;border-radius:10px;overflow:hidden}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top;word-break:break-word}
+th{text-align:left;color:var(--muted);background:#18181a}
+caption{caption-side:bottom;font-size:11px;color:var(--muted);padding-top:6px}
+a{color:var(--muted);text-decoration:underline}
+a:hover{color:#e1e1e1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="index.html">← Vissza a kalkulátorhoz</a></p>
+  <section class="card">
+    <div class="pill">Segédlet</div>
+    <h2>Talaj fajlagos hőellenállása</h2>
+    <p class="muted">Jellemző talaj- és anyag hőellenállások (K·m/W) iránymutató értékek. Az alábbiakban megadott értékek legalább 85%-os talajtömörségre vonatkoznak.</p>
+    <table>
+      <thead>
+        <tr><th>Talaj- és anyagmegjelölés</th><th>Hőellenállás (K·m/W)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Nedves homok</td><td>1</td></tr>
+        <tr><td>Száraz homok</td><td>2,5</td></tr>
+        <tr><td>Homok (0,1–0,3 mm) + kavics (4–8 mm) (1:1)</td><td>0,5–0,8</td></tr>
+        <tr><td>Homok + cement (14:1)</td><td>0,7–1,2</td></tr>
+        <tr><td>Kvarc (tömör)</td><td>0,1</td></tr>
+        <tr><td>Agyag</td><td>1,6</td></tr>
+        <tr><td>Homok + agyag (25% + 75%)</td><td>1,39</td></tr>
+        <tr><td>Homok + agyag (75% + 25%)</td><td>1,95</td></tr>
+        <tr><td>Homok + agyag (50% + 50%)</td><td>1,9</td></tr>
+        <tr><td>Gránit</td><td>0,3–0,6</td></tr>
+        <tr><td>Nedves tőzeg</td><td>1,2</td></tr>
+        <tr><td>Száraz tőzeg</td><td>2,5</td></tr>
+        <tr><td>Mészkő</td><td>0,5</td></tr>
+        <tr><td>Homokkő</td><td>0,6</td></tr>
+        <tr><td>Mika</td><td>1,7</td></tr>
+        <tr><td>Víz</td><td>1,65</td></tr>
+        <tr><td>Szerves anyagok</td><td>4 (nedves) – 7 (száraz)</td></tr>
+        <tr><td>Levegő</td><td>40</td></tr>
+        <tr><td>Beton</td><td>1,2</td></tr>
+      </tbody>
+      <caption>Tipikus tartományok; tervezéshez mindig a konkrét értékeket használd.</caption>
+    </table>
+  </section>
+</div>
+</body>
+</html>

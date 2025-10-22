@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kábel terhelhetőség</title>
+<style>
+:root{--bg:#0b0b0c;--card:#1a1a1c;--text:#e1e1e1;--muted:#9da6b5;--line:#2a2a2d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
+.wrap{max-width:1120px;margin:32px auto;padding:0 16px}
+h1{font-size:22px;margin:0 0 12px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+.grid{display:grid;gap:16px}
+@media(min-width:980px){.grid{grid-template-columns:1.2fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 8px 40px rgba(0,0,0,.35)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:12px;color:var(--muted);display:block;margin:6px 0}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#121214;color:var(--text)}
+input:focus,select:focus{outline:none;border-color:#444;background:#18181a}
+.pill{display:inline-block;background:#151517;border:1px solid var(--line);border-radius:999px;padding:6px 10px;margin-right:8px;color:var(--muted);font-size:12px}
+.muted{color:var(--muted);font-size:12px}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace}
+.big{font-size:32px;font-weight:800;letter-spacing:.2px}
+.btn{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#151519;color:#e6e6e6;cursor:pointer}
+.btn:hover{background:#1f1f22}
+hr{border:0;border-top:1px dashed var(--line);margin:14px 0}
+details{margin-top:8px}
+summary{color:var(--muted);font-size:12px;cursor:pointer}
+code{background:#141416;padding:2px 6px;border-radius:6px;border:1px solid #202022}
+.note{font-size:11px;color:#7a7a7a;margin-top:12px}
+
+
+  /* --- Rendszer adatai státuszszínek --- */
+.ok  { color:#4ade80; }  /* zöld */
+.bad { color:#f87171; }  /* piros */
+
+ 
+/* Segédletek gomb elválasztó és térköz */
+.sources-actions{
+  margin-top:18px;              /* kicsit több hely felül */
+  padding-top:12px;             /* hely a vonal és a gomb között */
+  border-top:1px dashed var(--line);
+  display:flex;                 /* ha középre kéred: justify-content:center; */
+  justify-content:center;
+}
+
+/* Kisebb, visszafogottabb gomb csak itt */
+.sources-actions .btn{
+  padding:6px 10px;             /* kisebb */
+  font-size:12px;               /* kisebb betű */
+  line-height:1;
+  border-radius:10px;
+  background:transparent;       /* visszafogott */
+  color:var(--muted);
+  border:1px dashed var(--line);/* vizuális kapcsolat a szaggatott elválasztóval */
+}
+.sources-actions .btn:hover{
+  background:#0a1424;
+  color:var(--text);
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Földkábel terhelhetőség/Cable current capacity</h1>
+  <div class="sub">A = <strong>Alapterhelhetőség/Base load</strong> × <strong>f1</strong> × <strong>f2</strong> </div>
+  <div class="grid">
+    <section class="card">
+      <div class="pill">1. Alap</div>
+      <label for="base">Alapterhelhetőség/Base load (A)</label>
+      <input id="base" type="number" min="0" step="0.1" />
+      <hr />
+      <div class="pill">2. f1 </div>
+      <div class="row">
+        <div>
+          <label for="f1type">Kábel típusa/Cable type</label>
+          <select id="f1type" title="Kábel típusa felhasználása az f1 táblázatban">
+            <option value="XLPE90">90 °C – XLPE-szigetelésű</option>
+            <option value="PVC70">70 °C – PVC-szigetelésű</option>
+            <option value="PE70">70 °C – PE-szigetelésű</option>
+            <option value="PAPER65">65 °C – Telített papírszigetelésű (6/10–12/20 kV)</option>
+            <option value="PAPER60">60 °C – Telített papírszigetelésű (18/30–20,8/36 kV)</option>
+          </select>
+        </div>
+        <div>
+          <label for="soilT">Talaj hőmérséklete/Soil temp (°C)</label>
+          <select id="soilT" title="Talaj hőmérséklete">
+            <option>5</option><option>10</option><option>15</option><option>20</option><option>25</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="rho">Talaj fajlagos hőellenállása/Soil thermal resistivity</label>
+          <select id="rho" title="Talaj fajlagos hőellenállása">
+            <option>0.7</option><option>1.0</option><option>1.5</option><option>2.5</option>
+          </select>
+        </div>
+        <div>
+          <label for="lf">Terhelési tényező/Load factor</label>
+          <select id="lf" title="Terhelési tényező">
+            <option>0.50</option><option>0.60</option><option>0.70</option><option>0.85</option><option>1.00</option>
+          </select>
+        </div>
+      </div>
+      <hr />
+      <div class="pill">3. f2 </div>
+      <div class="row">
+        <div>
+          <label for="arr">Kábel elrendezés/Cable arrangement</label>
+          <select id="arr" title="Kábel elrendezés az f2 táblázatok szerint">
+            <option value="triangle7">Háromszögben, 7 cm</option>
+            <option value="triangle25">Háromszögben, 25 cm</option>
+            <option value="flat7">Síkban, 7 cm</option>
+            <option value="3core">Háromerű kábel, síkban, 7 cm</option>
+          </select>
+        </div>
+        <div>
+          <label for="f2type">Kábel típusa/Cable type</label>
+          <select id="f2type" title="Kábel típusa az f2 táblázatok szerint">
+            <option value="XLPE">XLPE-szigetelésű</option>
+            <option value="PE">PE-szigetelésű</option>
+            <option value="PVC">PVC-szigetelésű</option>
+           <option value="Paper">Telített papírszigetelésű</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="systems">Kábelrendszerek száma/Cable systems</label>
+          <select id="systems" title="Kábelrendszerek száma">
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option><option>10</option>
+          </select>
+        </div>
+        <div>
+          <label for="rho2">Talaj fajlagos hőellenállása/Soil thermal resistivity</label>
+          <select id="rho2" title="Talaj fajlagos hőellenállása az f2 számításhoz">
+            <option>0.7</option><option>1.0</option><option>1.5</option><option>2.5</option>
+          </select>
+        </div>
+      </div>
+<!-- Terhelési tényező (még a 3. f2 rész része) -->
+<div class="row">
+  <div>
+    <label for="lf2">Terhelési tényező/Load factor</label>
+    <select id="lf2" title="Terhelési tényező az f2 számításhoz">
+      <option>0.50</option><option>0.60</option><option>0.70</option><option>0.85</option><option>1.00</option>
+    </select>
+  </div>
+</div>
+
+<hr />
+
+<!-- 4. pont: Védőcső -->
+<div class="pill">4. Védőcső</div>
+<div class="row">
+  <div>
+    <label for="duct">Védőcső/Protective conduit</label>
+    <select id="duct" title="Ha van védőcső: 0,85-ös szorzó">
+      <option value="no">Nem</option>
+      <option value="yes">Igen (0,85×)</option>
+    </select>
+  </div>
+</div>
+
+<!-- Számítás gomb: külön blokkban, középen, kis térközzel -->
+<div style="display:flex;justify-content:center;gap:8px;margin-top:16px">
+  <button class="btn" id="calc">Számítás</button>
+  <button class="btn" id="exportXlsx">XLSX export</button>
+</div>
+
+
+
+
+      
+    </section>
+    <section class="card">
+      <div class="pill">Számítás eredménye</div>
+      <div style="display:grid; gap:8px; margin-top:8px;">
+        <div><span class="muted">f1 érték</span><div class="mono" id="f1v">–</div></div>
+        <div><span class="muted">f2 érték</span><div class="mono" id="f2v">–</div></div>
+        <div><span class="muted">Végső terhelhetőség (A)</span><div class="big" id="total">—</div></div>
+      </div>
+      
+      <div class="sources-actions">
+  <a href="segedletek.html" class="btn" role="button">Segédletek</a>
+</div>
+
+    </section>
+    <section class="card" id="system-card">
+  <div class="pill">5. Rendszer adatai (opcionális)</div>
+
+  <div class="row">
+    <div>
+      <label for="sysU">Névleges feszültség/Nominal voltage</label>
+      <select id="sysU" title="Háromfázisú rendszer feszültsége (V)">
+        <option value="">– válassz –</option>
+        <option value="22000">22 kV</option>
+        <option value="11000">11 kV</option>
+        <option value="400">0,4 kV</option>
+      </select>
+    </div>
+    <div>
+      <label for="sysP">Teljesítmény/Power (kW)</label>
+      <input id="sysP" type="number" min="0" step="0.1" placeholder="pl. 500" />
+    </div>
+  </div>
+
+  <div class="muted" style="margin-top:8px">Háromfázisú képlet: <span class="mono">I = P / (√3 · U)</span></div>
+
+  <div class="row" style="margin-top:8px">
+    <div>
+      <span class="muted">Áram/Current</span>
+      <div class="mono" id="sysI">–</div>
+    </div>
+    <div>
+      <span class="muted">Megfelelés/Rating check</span>
+      <div class="mono" id="sysCheck">–</div>
+    </div>
+  </div>
+</section>
+
+<section class="card" id="voltage-drop-card">
+  <div class="pill">6. Feszültségesés számítás</div>
+  
+  <div class="row">
+    <div>
+      <label for="vdCableType">Kábel típusa/Cable type</label>
+      <select id="vdCableType" title="Kábel típusa a feszültségesés számításhoz">
+        <option value="XLPE">XLPE-szigetelésű</option>
+        <option value="PE">PE-szigetelésű</option>
+        <option value="PVC">PVC-szigetelésű</option>
+      </select>
+    </div>
+    <div>
+      <label for="vdCrossSection">Keresztmetszet/Cross section (mm²)</label>
+      <select id="vdCrossSection" title="Kábel keresztmetszete">
+        <option value="25">25 mm²</option>
+        <option value="35">35 mm²</option>
+        <option value="50">50 mm²</option>
+        <option value="70">70 mm²</option>
+        <option value="95">95 mm²</option>
+        <option value="120">120 mm²</option>
+        <option value="150">150 mm²</option>
+        <option value="185">185 mm²</option>
+        <option value="240">240 mm²</option>
+        <option value="300">300 mm²</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div>
+      <label for="vdLength">Kábel hossza/Cable length (km)</label>
+      <input id="vdLength" type="number" min="0" step="0.1" placeholder="pl. 0.5" />
+    </div>
+    <div>
+      <label for="vdPowerFactor">Teljesítménytényező/Power factor</label>
+      <select id="vdPowerFactor" title="Teljesítménytényező">
+        <option value="0.8">0.8 (induktív)</option>
+        <option value="0.9">0.9</option>
+        <option value="1.0">1.0 (tiszta ohmos)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="muted" style="margin-top:8px">Feszültségesés képlet: <span class="mono">ΔU = √3 × I × L × (R × cosφ + X × sinφ)</span></div>
+
+  <div class="row" style="margin-top:8px">
+    <div>
+      <span class="muted">Feszültségesés/Voltage drop</span>
+      <div class="mono" id="vdResult">–</div>
+    </div>
+    <div>
+      <span class="muted">Százalék/Percentage</span>
+      <div class="mono" id="vdPercentage">–</div>
+    </div>
+  </div>
+</section>
+
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script src="data/f1Data.js"></script>
+<script src="data/f2Data.js"></script>
+
+<script>
+  if (typeof f1Data === 'undefined' || typeof f2Data === 'undefined') {
+    alert('Hiányzik az adatfájl (f1Data/f2Data). Ellenőrizd a data/ könyvtárat és a <script> sorrendet!');
+  }
+</script>
+
+<script src="js/utils.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/app.js"></script>
+<script src="js/export-xlsx.js"></script>
+
+
+</body>
+</html>
